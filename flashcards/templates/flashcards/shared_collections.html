@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared Collections</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'flashcards/styles.css' %}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}">Flashcards</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:flashcard_list' %}">My Flashcards</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:flashcard_create' %}">Create Flashcard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:collection_list' %}">Collections</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:flashcard_shared_list' %}">Shared</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:shared_collections' %}">Shared Collections</a></li>
+
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary text-white ms-3" href="{% url 'flashcards:study_mode' %}" style="border-radius: 8px;">Study Mode</a>
+                    </li>
+                </ul>
+                <div class="profile-menu ms-2">
+                    <a href="{% url 'flashcards:profile' %}" class="btn btn-outline-light btn-sm">Profile</a>
+                </div>
+            </div>
+        </div>
+    </nav> 
+
+    <!-- Header -->
+    <header class="text-center py-5" style="background: linear-gradient(135deg, #0077b6, #330633); color: white;">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Shared Collections</h1>
+            <p class="lead">Discover and explore collections shared by others.</p>
+        </div>
+    </header>
+
+    <!-- Filters and Search -->
+    <div class="container py-3">
+        <div class="row">
+            <div class="col-md-4">
+                <label for="sortOptions" class="form-label fw-bold">Sort by:</label>
+                <select id="sortOptions" class="form-select">
+                    <option value="default">Default</option>
+                    <option value="rating-high">Rating (High to Low)</option>
+                    <option value="rating-low">Rating (Low to High)</option>
+                    <option value="date-new">Date (Newest First)</option>
+                    <option value="date-old">Date (Oldest First)</option>
+                </select>
+            </div>
+            <div class="col-md-8">
+                <label for="searchInput" class="form-label fw-bold">Search by Name:</label>
+                <input id="searchInput" type="text" class="form-control" placeholder="Enter collection name">
+            </div>
+        </div>
+    </div>
+
+    <!-- Collections Section -->
+    <div class="container py-5" id="collectionContainer">
+        {% if collections %}
+            <div class="row g-4">
+                {% for collection in collections %}
+                    <div class="col-lg-4 col-md-6 collection-item" 
+                         data-rating="{{ collection.avg_rating|default:0 }}" 
+                         data-date="{{ collection.created_at|date:'Y-m-d\TH:i:s' }}" 
+                         data-name="{{ collection.name }}">
+                        <div class="card h-100 shadow-sm" style="border-radius: 25px;">
+                            <div class="card-header text-white text-center" style="background: linear-gradient(135deg, #0077b6, #330633);">
+                                <h5 class="mb-1">{{ collection.name }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-muted mb-1">
+                                    <small>Created on: {{ collection.created_at|date:"F j, Y" }}</small>
+                                </p>
+                                <p class="card-text mb-2">
+                                    <strong>Total Flashcards:</strong> {{ collection.flashcards.count }}
+                                </p>
+                                <p class="card-text mb-2">
+                                    <strong>Average Rating:</strong> {{ collection.avg_rating|floatformat:1|default:"No ratings yet" }}
+                                </p>
+                            </div>
+                            <div class="card-footer d-flex justify-content-around">
+                                <a href="{% url 'flashcards:shared_collection_view' collection.id %}" class="btn btn-outline-secondary btn-sm">View Collection</a>
+                                <button class="btn btn-outline-primary btn-sm add-collection-btn" data-id="{{ collection.id }}">
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center mt-4">
+                <strong>No shared collections found.</strong>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-3 bg-dark text-white">
+        Flashcards App © 2024. All rights reserved.
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Handle Add Collection Button
+            document.querySelectorAll('.add-collection-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const collectionId = button.dataset.id;
+
+                    fetch(`/flashcards/add_collection/${collectionId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                            'Content-Type': 'application/json',
+                        },
+                    }).then(response => {
+                        if (response.ok) {
+                            button.classList.remove('btn-outline-primary');
+                            button.classList.add('btn-success');
+                            button.textContent = 'Added';
+                            button.disabled = true;
+                        } else {
+                            alert('Failed to add the collection.');
+                        }
+                    }).catch(err => console.error(err));
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+

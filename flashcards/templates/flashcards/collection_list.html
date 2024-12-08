@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Collections</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'flashcards/styles.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'flashcards/images/back.png' %}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}">Flashcards</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:flashcard_list' %}">My Flashcards</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:flashcard_create' %}">Create Flashcard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:flashcard_shared_list' %}">Shared</a></li>
+                    <li class="nav-item">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:shared_collections' %}">Shared Collections</a></li>
+                        <a class="nav-link btn btn-primary text-white ms-3" href="{% url 'flashcards:study_mode' %}" style="border-radius: 8px;">Study Mode</a>
+                    </li>
+                </ul>
+                <div class="profile-menu ms-2">
+                    <a href="{% url 'flashcards:profile' %}" class="btn btn-outline-light btn-sm">Profile</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="text-center py-5" style="background: linear-gradient(135deg, #0077b6, #330633); color: white;">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Your Collections</h1>
+            <p class="lead">Organize and manage your flashcard collections with ease.</p>
+        </div>
+    </header>
+
+    <!-- Collections Section -->
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-primary fw-bold">Your Collections</h2>
+            <a href="{% url 'flashcards:collection_create' %}" class="btn btn-primary btn-lg">+ New Collection</a>
+        </div>
+
+        {% if collections %}
+            <div class="row g-4">
+                {% for collection in collections %}
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-sm" style="border-radius: 25px;">
+                            <!-- Card Header -->
+                            <div class="card-header text-white text-center" 
+                                 style="background: linear-gradient(135deg, #0077b6, #330633);">
+                                <h5 class="mb-1">{{ collection.name }}</h5>
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <p class="text-muted mb-1">
+                                    <small>Created on: {{ collection.created_at|date:"F j, Y" }}</small>
+                                </p>
+                                <p class="card-text mb-2">
+                                    <strong>Total Flashcards:</strong> {{ collection.flashcards.count }}
+                                </p>
+                                <ul class="list-unstyled">
+                                    {% for flashcard in collection.flashcards.all|slice:":3" %}
+                                        <li>• {{ flashcard.question }}</li>
+                                    {% empty %}
+                                        <li><em>No flashcards added yet.</em></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <!-- Card Footer -->
+                            <div class="card-footer d-flex justify-content-between">
+                                <a href="{% url 'flashcards:collection_flashcards' collection.pk %}" class="btn btn-outline-secondary btn-sm">View All</a>
+                                <form method="POST" action="{% url 'flashcards:collection_delete' collection.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center mt-4">
+                <strong>No collections found.</strong> Start by creating a new collection!
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-3 bg-dark text-white">
+        Flashcards App © 2024. All rights reserved.
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

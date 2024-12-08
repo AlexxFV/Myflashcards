@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Flashcards</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'flashcards/styles.css' %}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}">Flashcards</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:flashcard_create' %}">Create</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:collection_list' %}">Collections</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:flashcard_shared_list' %}">Shared</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:shared_collections' %}">Shared Collections</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary text-white ms-3" href="{% url 'flashcards:study_mode' %}" style="border-radius: 8px;">Study Mode</a>
+                    </li>
+                </ul>
+                <div class="profile-menu ms-2">
+                    <a href="{% url 'flashcards:profile' %}" class="btn btn-outline-light btn-sm">Profile</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="text-center py-5" style="background: linear-gradient(135deg, #0077b6, #330633); color: white;">
+        <div class="container">
+            <h1 class="display-4 fw-bold">My Flashcards</h1>
+            <p class="lead">Manage yours Flashcards.</p>
+        </div>
+    </header>
+
+    <!-- Unhide All and Filter Section -->
+    <div class="container py-3 d-flex justify-content-between align-items-center">
+        <button id="unhide-all" class="btn btn-primary">Unhide All Flashcards</button>
+        <div>
+            <label for="difficultyFilter" class="fw-bold me-2">Filter by Difficulty:</label>
+            <select id="difficultyFilter" class="form-select d-inline-block w-auto">
+                <option value="all">All</option>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Flashcards Section -->
+    <div class="container py-5">
+        <div class="row g-4" id="flashcardContainer">
+            {% for flashcard in flashcards %}
+                <div class="col-md-3 flashcard-wrapper" id="flashcard-{{ flashcard.id }}" data-difficulty="{{ flashcard.difficulty }}">
+                    <div class="flashcard">
+                        <div class="flashcard-inner">
+                            <!-- Front -->
+                            <div class="flashcard-front">
+                                <h5>Question</h5>
+                                <p>{{ flashcard.question }}</p>
+                                <span class="badge bg-secondary">Difficulty: {{ flashcard.difficulty }}</span>
+                            </div>
+                            <!-- Back -->
+                            <div class="flashcard-back">
+                                <h5>Answer</h5>
+                                <p>{{ flashcard.answer }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-2">
+                        <form method="POST" action="{% url 'flashcards:flashcard_toggle_share' flashcard.pk %}">
+                            {% csrf_token %}
+                            {% if flashcard.is_shared %}
+                                <button type="submit" class="btn btn-warning btn-sm">Unshare</button>
+                            {% else %}
+                                <button type="submit" class="btn btn-success btn-sm">Share</button>
+                            {% endif %}
+                        </form>
+                        <button class="btn btn-outline-secondary btn-sm toggle-visibility" data-id="{{ flashcard.id }}">Hide</button>
+                        <form method="POST" action="{% url 'flashcards:flashcard_delete' flashcard.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-center text-white">No flashcards available. Create one to get started!</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div>Flashcards App © 2024. All rights reserved.</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.toggle-visibility').forEach(button => {
+                button.addEventListener('click', function () {
+                    const flashcardId = this.dataset.id;
+                    const flashcardWrapper = document.getElementById(`flashcard-${flashcardId}`);
+                    if (flashcardWrapper) flashcardWrapper.classList.add('hidden');
+                });
+            });
+
+            document.querySelectorAll('.flashcard').forEach(card => {
+                card.addEventListener('click', function () {
+                    this.classList.toggle('flipped');
+                });
+            });
+
+            const unhideAllButton = document.getElementById('unhide-all');
+            if (unhideAllButton) {
+                unhideAllButton.addEventListener('click', () => {
+                    document.querySelectorAll('.flashcard-wrapper.hidden').forEach(wrapper => {
+                        wrapper.classList.remove('hidden');
+                    });
+                });
+            }
+
+            // Filter by Difficulty
+            document.getElementById('difficultyFilter').addEventListener('change', function () {
+                const filterValue = this.value;
+                const flashcards = document.querySelectorAll('.flashcard-wrapper');
+
+                flashcards.forEach(card => {
+                    const difficulty = card.dataset.difficulty;
+                    if (filterValue === 'all' || difficulty === filterValue) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+

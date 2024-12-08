@@ -1,0 +1,553 @@
+/* General Body Styling */
+body {
+    background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Roboto', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+/* Navbar Styling */
+.navbar {
+    background: #1f2933;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #f0f0f0 !important;
+    transition: color 0.3s ease-in-out;
+}
+.navbar-brand:hover {
+    color: #a907d1 !important;
+}
+.navbar-nav .nav-link {
+    color: #ffffff !important;
+    font-size: 1rem;
+    transition: color 0.3s ease-in-out;
+}
+.navbar-nav .nav-link:hover {
+    color: #a907d1 !important;
+}
+
+/* Header Styling */
+header {
+    position: relative;
+    background: linear-gradient(135deg, #a907d1, #a907d1, #a907d1);
+    color: white;
+    padding: 120px 20px;
+    text-align: center;
+    overflow: hidden;
+    font-family: 'angelfinder';
+}
+header h1 {
+    font-size: 4.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.1;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 2s ease-in-out;
+}
+header p {
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin-bottom: 35px;
+    color: #f1faee;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 2.5s ease-in-out;
+}
+
+/* Header Effects */
+header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15), transparent 70%);
+    z-index: 0;
+    animation: rotateOverlay 20s infinite linear;
+}
+header::after {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: -150px;
+    width: 300%;
+    height: 300%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05), transparent 80%);
+    z-index: 0;
+    animation: floatParticles 30s infinite linear;
+}
+header > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes rotateOverlay {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+@keyframes floatParticles {
+    0% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(50px, 30px);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2.5rem;
+    }
+    header p {
+        font-size: 1.2rem;
+    }
+}
+
+/* Flashcard Container */
+.flashcard {
+    background: white;
+    width: 300px;
+    height: 400px;
+    perspective: 1200px;
+    margin: 0 auto;
+    border-radius: 16px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.flashcard:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Inner Card for 3D Flip */
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease-in-out;
+}
+.flashcard.flipped .flashcard-inner {
+    transform: rotateY(180deg);
+}
+
+/* Front and Back Faces */
+.flashcard-front,
+.flashcard-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+}
+.flashcard-front {
+    background: linear-gradient(135deg, #1d3557, #457b9d);
+    color: white;
+    text-align: center;
+}
+.flashcard-back {
+    background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+    color: #333;
+    text-align: center;
+    transform: rotateY(180deg);
+}
+
+/* Flashcard Content */
+.flashcard-front h5,
+.flashcard-back h5 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.flashcard-front h5 {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.flashcard-front p,
+.flashcard-back p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Badge Styling */
+.badge {
+    margin-top: 10px;
+    background: #f0b429;
+    color: white;
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .flashcard {
+        width: 90%;
+        height: 350px;
+    }
+    .flashcard-front h5,
+    .flashcard-back h5 {
+        font-size: 1.2rem;
+    }
+    .flashcard-front p,
+    .flashcard-back p {
+        font-size: 0.9rem;
+    }
+}
+
+/* Explore Section Styling */
+.explore-section {
+    background-image: url("../images/back.png");
+    background-size: cover;
+    background-position: center;
+    padding: 60px 0;
+}
+.explore-section h2 {
+    color: white;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Hidden Elements */
+.hidden {
+    display: none;
+}
+
+/* Collection Card Styling */
+.card {
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.card-header {
+    font-size: 1.25rem;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+.card-footer {
+    background-color: #f8f9fa;
+}
+.card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1d3557;
+}
+
+/* Button Styling */
+.btn {
+    border-radius: 8px;
+    background-color: #457b9d;
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+.btn:hover {
+    background-color: #1d3557;
+    color: white;
+}
+
+/* Alert Styling */
+.alert {
+    font-size: 1rem;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+
+/* Form Container */
+.form-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+.form-container h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1d3557;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.form-container .form-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #457b9d;
+}
+.form-container .form-control {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.form-container .form-control:focus {
+    border-color: #457b9d;
+    box-shadow: 0 0 8px rgba(69, 123, 157, 0.5);
+    outline: none;
+}
+.form-container .btn-submit {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 50px;
+    color: white;
+    background: linear-gradient(135deg, #1d3557, #457b9d);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+.form-container .btn-submit:hover {
+    background: linear-gradient(135deg, #457b9d, #1d3557);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Flashcard List */
+.flashcard-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+}
+.flashcard-item {
+    margin-bottom: 10px;
+}
+
+/* Star Rating */
+.star {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: lightgray;
+}
+.star.selected {
+    color: gold;
+}
+
+/* List Group Styling */
+.list-group {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.list-group-item {
+    padding: 15px 20px;
+    font-size: 1.1rem;
+}
+.list-group-item .btn {
+    border-radius: 8px;
+}
+
+/* Success and Danger Badges */
+.bg-success {
+    background-color: #28a745 !important;
+    color: white;
+}
+.bg-danger {
+    background-color: #dc3545 !important;
+    color: white;
+}
+
+/* Footer Styling */
+footer {
+    background: linear-gradient(135deg, #1d3557, #457b9d);
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 0.9rem;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.3);
+}
+footer a {
+    color: #f1faee;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+footer a:hover {
+    color: #a8dadc;
+}
+
+/* General Button Styling */
+.btn {
+    display: inline-block;
+    padding: 10px 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    border: none;
+    border-radius: 50px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+.btn-primary {
+    background: linear-gradient(135deg, #457b9d, #1d3557);
+    color: white;
+}
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1d3557, #457b9d);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+.btn-success {
+    background: linear-gradient(135deg, #38b000, #4caf50);
+    color: white;
+}
+.btn-success:hover {
+    background: linear-gradient(135deg, #4caf50, #38b000);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+.btn-warning {
+    background: linear-gradient(135deg, #f0b429, #f77f00);
+    color: white;
+}
+.btn-warning:hover {
+    background: linear-gradient(135deg, #f77f00, #f0b429);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+.btn-danger {
+    background: linear-gradient(135deg, #e63946, #b4161b);
+    color: white;
+}
+.btn-danger:hover {
+    background: linear-gradient(135deg, #b4161b, #e63946);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+.btn-outline-secondary {
+    background: none;
+    color: #1d3557;
+    border: 2px solid #1d3557;
+}
+.btn-outline-secondary:hover {
+    background: #1d3557;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+.btn-disabled {
+    background: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    box-shadow: none;
+    pointer-events: none;
+}
+
+/* List Styling */
+.list-container {
+    margin: 20px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.list-container ul {
+    list-style: none;
+    padding: 0;
+}
+.list-container ul li {
+    padding: 15px;
+    margin-bottom: 10px;
+    background: white;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.list-container ul li:hover {
+    background: #f1faee;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+.list-container ul li .btn {
+    padding: 5px 10px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+/* Table Styling */
+.table-container {
+    overflow-x: auto;
+    margin: 20px 0;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+}
+table thead {
+    background: linear-gradient(135deg, #1d3557, #457b9d);
+    color: white;
+}
+table thead th {
+    padding: 15px;
+    text-align: left;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+table tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+table tbody td {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    color: #333;
+}
+table tbody tr:hover {
+    background-color: #e9ecef;
+}
+table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'flashcards/styles.css' %}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}">Flashcards</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:flashcard_list' %}">My Flashcards</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:flashcard_create' %}">Create Flashcard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:collection_list' %}">Collections</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:flashcard_shared_list' %}">Shared</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:shared_collections' %}">Shared Collections</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="text-center py-5" style="background: linear-gradient(135deg, #0077b6, #330633); color: white;">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Study Results</h1>
+            <p class="lead">Review your performance and accuracy.</p>
+        </div>
+    </header>
+
+    <!-- Results Section -->
+    <div class="container py-5">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h2 class="card-title text-center text-primary">{{ collection.name }}</h2>
+                <p class="text-center">Here is a summary of your performance:</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Total Questions:</strong> {{ total_questions }}</p>
+                        <p><strong>Correct Answers:</strong> {{ correct_answers }}</p>
+                        <p><strong>Accuracy:</strong> {{ accuracy }}%</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Total Time:</strong> {{ total_time }} seconds</p>
+                        <p><strong>Average Time per Question:</strong> {{ total_time|divisibleby:total_questions }} seconds</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="text-center text-primary mb-4">Time Per Question</h3>
+        <ul class="list-group">
+            {% for entry in question_times %}
+                <li class="list-group-item">
+                    <strong>Question:</strong> {{ entry.question }} <br>
+                    <strong>Time:</strong> {{ entry.time }} seconds <br>
+                    <strong>Result:</strong> 
+                    <span class="badge {% if entry.success %}bg-success{% else %}bg-danger{% endif %}">
+                        {% if entry.success %}Correct{% else %}Incorrect{% endif %}
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'flashcards:study_mode' %}" class="btn btn-primary btn-lg">Back to Study Mode</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 bg-dark text-white mt-auto">
+        <div>Flashcards App © 2024. All rights reserved.</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

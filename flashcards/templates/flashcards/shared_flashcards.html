@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared Flashcards</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'flashcards/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}">Flashcards</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:flashcard_list' %}">My Flashcards</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:flashcard_create' %}">Create Flashcard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:collection_list' %}">Collections</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'flashcards:shared_collections' %}">Shared Collections</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary text-white ms-3" href="{% url 'flashcards:study_mode' %}">Study Mode</a>
+                    </li>
+                </ul>
+                <a href="{% url 'flashcards:profile' %}" class="btn btn-outline-light btn-sm ms-2">Profile</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="text-center py-5" style="background: linear-gradient(135deg, #0077b6, #330633); color: white;">
+        <div class="container">
+<h1 class="display-4 fw-bold">Shared Flashcards</h1>
+            <p class="lead">Discover and rate flashcards shared by others.</p>
+        </div>
+    </header>
+
+    <!-- Sorting and Filtering -->
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <label for="sortOptions" class="form-label fw-bold">Sort by:</label>
+                <select id="sortOptions" class="form-select d-inline-block w-auto">
+                    <option value="default">Default</option>
+                    <option value="rating-high">Rating (High to Low)</option>
+                    <option value="rating-low">Rating (Low to High)</option>
+                    <option value="date-new">Date (Newest First)</option>
+                    <option value="date-old">Date (Oldest First)</option>
+                </select>
+            </div>
+            <div>
+                <label for="difficultyFilter" class="form-label fw-bold">Filter by Difficulty:</label>
+                <select id="difficultyFilter" class="form-select d-inline-block w-auto">
+                    <option value="all">All</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flashcards -->
+    <div class="container py-5">
+        <div class="row g-4" id="flashcardContainer">
+            {% if flashcards %}
+                {% for flashcard in flashcards %}
+                    <div class="col-md-4 flashcard-item" 
+                         data-rating="{{ flashcard.average_rating|default:0 }}" 
+                         data-date="{{ flashcard.created_at|date:'Y-m-d\TH:i:s' }}" 
+                         data-difficulty="{{ flashcard.difficulty }}">
+                        <div class="flashcard">
+                            <div class="flashcard-inner">
+                                <!-- Front -->
+                                <div class="flashcard-front text-center bg-light p-3">
+                                    <h5>Question</h5>
+                                    <p>{{ flashcard.question }}</p>
+                                    <span class="badge bg-secondary">Difficulty: {{ flashcard.difficulty }}</span>
+                                    <p>Rating: {{ flashcard.average_rating|default:"No ratings yet" }}</p>
+                                </div>
+                                <!-- Back -->
+                                <div class="flashcard-back text-center bg-light p-3">
+                                    <h5>Answer</h5>
+                                    <p>{{ flashcard.answer }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3">
+                            <!-- Rating stars -->
+                            <div class="rating d-inline-block" data-flashcard-id="{{ flashcard.id }}">
+                                {% for i in "12345" %}
+                                    <i class="star fas fa-star" data-value="{{ i }}"></i>
+                                {% endfor %}
+                            </div>
+                            <!-- Add button -->
+                            <button class="btn btn-outline-primary add-flashcard-btn d-inline-block ms-3" data-id="{{ flashcard.id }}">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info text-center mt-4">
+                    No shared flashcards available. Be the first to share one!
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 bg-dark text-white">
+        <div>Flashcards App &copy; 2024. All rights reserved.</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Handle flashcard flipping
+            document.querySelectorAll('.flashcard').forEach(card => {
+                card.addEventListener('click', e => {
+                    if (e.target.closest('.add-flashcard-btn, .star')) return;
+                    card.classList.toggle('flipped');
+                });
+            });
+
+            // Handle add flashcard button
+            document.querySelectorAll('.add-flashcard-btn').forEach(button => {
+                button.addEventListener('click', e => {
+                    e.stopPropagation(); // Avoid card flip on button click
+                    const flashcardId = button.dataset.id;
+
+                    fetch(`/flashcards/add/${flashcardId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                            'Content-Type': 'application/json',
+                        },
+                    }).then(response => {
+                        if (response.ok) {
+                            button.classList.remove('btn-outline-primary');
+                            button.classList.add('btn-success');
+                            button.innerHTML = '<i class="fas fa-check"></i> Added';
+                            button.disabled = true;
+                        } else {
+                            alert('Failed to add the flashcard.');
+                        }
+                    }).catch(err => console.error(err));
+                });
+            });
+
+            // Handle rating stars
+            document.querySelectorAll('.rating').forEach(ratingDiv => {
+                const flashcardId = ratingDiv.dataset.flashcardId;
+                const stars = ratingDiv.querySelectorAll('.star');
+
+                stars.forEach(star => {
+                    star.addEventListener('click', e => {
+                        e.stopPropagation(); // Prevent flip on star click
+                        const rating = star.dataset.value;
+
+                        // Update star visuals
+                        stars.forEach(s => s.classList.remove('selected'));
+                        for (let i = 0; i < rating; i++) {
+                            stars[i].classList.add('selected');
+                        }
+
+                        // Send rating to server
+                        fetch(`/flashcards/rate/${flashcardId}/`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ rating }),
+                        }).then(response => {
+                            if (!response.ok) {
+                                alert('Failed to save rating.');
+                            }
+                        });
+                    });
+                });
+            });
+
+            // Handle sorting
+            document.getElementById('sortOptions').addEventListener('change', sortFlashcards);
+
+            // Handle filtering
+            document.getElementById('difficultyFilter').addEventListener('change', filterFlashcards);
+
+            // Sort Flashcards
+            function sortFlashcards() {
+                const sortOption = document.getElementById('sortOptions').value;
+                const container = document.getElementById('flashcardContainer');
+                const flashcards = Array.from(container.querySelectorAll('.flashcard-item'));
+
+                flashcards.sort((a, b) => {
+                    if (sortOption === 'rating-high') {
+                        return b.dataset.rating - a.dataset.rating;
+                    } else if (sortOption === 'rating-low') {
+                        return a.dataset.rating - b.dataset.rating;
+                    } else if (sortOption === 'date-new') {
+                        return new Date(b.dataset.date) - new Date(a.dataset.date);
+                    } else if (sortOption === 'date-old') {
+                        return new Date(a.dataset.date) - new Date(b.dataset.date);
+                    }
+                    return 0;
+                });
+
+                flashcards.forEach(card => container.appendChild(card));
+            }
+
+            // Filter Flashcards
+            function filterFlashcards() {
+                const filterValue = document.getElementById('difficultyFilter').value;
+                const flashcards = document.querySelectorAll('.flashcard-item');
+
+                flashcards.forEach(card => {
+                    if (filterValue === 'all' || card.dataset.difficulty === filterValue) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
