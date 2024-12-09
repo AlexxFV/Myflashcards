@@ -75,6 +75,14 @@
             <a href="{% url 'flashcards:study_mode' %}" class="btn btn-primary btn-lg">Back to Study Mode</a>
         </div>
     </div>
+    <!-- Speaker Button -->
+    <button class="speaker-button" id="speaker-button" aria-label="Read Page">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-volume-up" viewBox="0 0 16 16">
+            <path d="M11.536 14.01a.5.5 0 0 1-.741-.438v-1.992a.5.5 0 0 1 .808-.41c.276.204.538.434.776.69.484.526.861 1.146 1.096 1.818a.5.5 0 0 1-.463.652c-.41.005-.82-.143-1.182-.32a11.567 11.567 0 0 1-1.108-.62z"/>
+            <path d="M12.253 10.513a.5.5 0 0 1-.253-.432v-5.162a.5.5 0 0 1 .253-.432 8.476 8.476 0 0 1 1.39-.757.5.5 0 0 1 .604.527c.073.91.057 1.834-.057 2.74a8.363 8.363 0 0 1-.81 3.372.5.5 0 0 1-.774.143c-.204-.17-.427-.325-.653-.46z"/>
+            <path d="M8.636 1.769a.5.5 0 0 1 .282.453v12.032a.5.5 0 0 1-.746.436l-3.718-2.479H2.5a.5.5 0 0 1-.5-.5V5.793a.5.5 0 0 1 .5-.5h1.672L8.17 2.228a.5.5 0 0 1 .465-.459zM4.93 6H3v4h1.93l3.572 2.382V3.618L4.93 6z"/>
+        </svg>
+    </button>
 
     <!-- Footer -->
     <footer class="text-center py-4 bg-dark text-white mt-auto">
@@ -82,6 +90,26 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Text-to-Speech Functionality
+        document.getElementById("speaker-button").addEventListener("click", function () {
+            const synth = window.speechSynthesis;
+            if (!synth) {
+                alert("Your browser does not support text-to-speech.");
+                return;
+            }
+
+            const content = document.body.innerText; // Get all the text on the page
+            const utterance = new SpeechSynthesisUtterance(content);
+            utterance.lang = 'en-US'; // Set the language
+            utterance.volume = 1; // Volume (0.1 to 1)
+            utterance.rate = 1; // Speed (0.1 to 2)
+            utterance.pitch = 1; // Pitch (0 to 2)
+
+            synth.cancel(); // Stop any ongoing speech
+            synth.speak(utterance); // Start speaking
+        });
+    </script>
 </body>
 </html>
 
