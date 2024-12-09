@@ -267,3 +267,6 @@ def test_add_collection(client):
 def test_url_resolves_to_correct_view(path, view_name):
     match = resolve(f'/{path}')
     assert match.view_name == view_name
+
+
+
