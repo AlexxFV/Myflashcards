@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect
 import pytest
 from django.contrib.auth import get_user_model
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from django.urls import resolve
 
 User = get_user_model()
 
@@ -217,5 +218,52 @@ def test_invalid_study_question_index():
     client.login(username="testuser", password="Testpassword")
     url = reverse('flashcards:study_question', args=[collection.id, 999])
     response = client.get(url)
-    assert response.status_code == 302  # Redirect to results
+    assert response.status_code == 302 
 
+import pytest
+from django.urls import reverse, resolve
+from flashcards.models import FlashCard, Collection, Rating, DailyLimit
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_302_FOUND
+from django.http import JsonResponse
+
+# Test: Add collection
+@pytest.mark.django_db
+def test_add_collection(client):
+    user = User.objects.create_user(username="testuser", password="Testpassword")
+    shared_user = User.objects.create_user(username="shareduser", password="SharedPassword")
+    flashcard = FlashCard.objects.create(
+        question="What is API?",
+        answer="Application Programming Interface",
+        difficulty="easy",
+        created_by=shared_user
+    )
+    collection = Collection.objects.create(name="Shared Collection", user=shared_user)
+    collection.flashcards.add(flashcard)
+
+    client.login(username="testuser", password="Testpassword")
+    url = reverse('flashcards:add_collection', args=[collection.id])
+    response = client.post(url)
+
+    assert response.status_code == HTTP_200_OK
+    assert Collection.objects.filter(name="Shared Collection", user=user).exists()
+
+# Test: Routes
+@pytest.mark.parametrize("path,view_name", [
+    ('', 'index'),
+    ('flashcards/', 'flashcards:flashcard_list'),
+    ('flashcards/create/', 'flashcards:flashcard_create'),
+    ('flashcards/flashcard/1/delete/', 'flashcards:flashcard_delete'),
+    ('flashcards/flashcard/1/toggle-share/', 'flashcards:flashcard_toggle_share'),
+    ('flashcards/flashcard/1/toggle-hidden/', 'flashcards:flashcard_toggle_hidden'),
+    ('flashcards/shared/', 'flashcards:flashcard_shared_list'),
+    ('flashcards/flashcard/1/rate/', 'flashcards:rate_flashcard'),
+    ('flashcards/collections/', 'flashcards:collection_list'),
+    ('flashcards/collections/create/', 'flashcards:collection_create'),
+    ('flashcards/collections/1/flashcards/', 'flashcards:collection_flashcards'),
+    ('flashcards/collections/shared/', 'flashcards:shared_collections'),
+    ('flashcards/collections/shared/1/', 'flashcards:shared_collection_view'),
+    ('flashcards/add_collection/1/', 'flashcards:add_collection'),
+])
+def test_url_resolves_to_correct_view(path, view_name):
+    match = resolve(f'/{path}')
+    assert match.view_name == view_name
