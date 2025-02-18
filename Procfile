@@ -1,5 +1,1 @@
-web:
-gunicorn
-flashcards.wsgi:application
---log-file
--
+web: gunicorn flashcards.wsgi:application --log-file -
