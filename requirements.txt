@@ -10,6 +10,7 @@ dnspython==2.7.0
 filelock==3.17.0
 flatbuffers==25.2.10
 fonttools==4.56.0
+gunicorn
 idna==3.10
 importlib_metadata==8.6.1
 importlib_resources==6.5.2
