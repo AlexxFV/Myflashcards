@@ -149,3 +149,6 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 CSRF_TRUSTED_ORIGINS = [
     "https://testvar-production.up.railway.app"
 ]
+CSRF_COOKIE_SECURE = True  # Asegura que la cookie CSRF se envía solo por HTTPS
+CSRF_COOKIE_HTTPONLY = False  # Evita que los scripts del navegador accedan a la cookie
+CSRF_USE_SESSIONS = True  # Usa la sesión para almacenar el token CSRF
