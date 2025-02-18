@@ -146,3 +146,6 @@ AUTH_USER_MODEL = 'flashcards.User'
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://testvar-production.up.railway.app"
+]
