@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,9 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-nje&+x9@ut_s_7g^+6(0k7fig=11le!tmtc#$g9v-y18unb2%s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+DEBUG = False
 
 # Application definition
 INSTALLED_APPS = [
@@ -146,3 +144,6 @@ AUTH_USER_MODEL = 'flashcards.User'
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+import os
+
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split(",")
