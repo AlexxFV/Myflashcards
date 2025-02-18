@@ -9,7 +9,7 @@ distlib==0.3.9
 django
 djangorestframework
 drf-spectacular
-
+drf-spectacular-sidecar
 dnspython==2.7.0
 filelock==3.17.0
 flatbuffers==25.2.10
