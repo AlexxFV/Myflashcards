@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_spectacular',  
     'drf_spectacular_sidecar',  
+    "whitenoise.runserver_nostatic",  
 ]
 
 REST_FRAMEWORK = {
@@ -64,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware", 
 ]
 
 ROOT_URLCONF = 'testvar.urls'
@@ -118,11 +120,6 @@ USE_TZ = True
 
 
 
-# Archivos estáticos (CSS, JS, imágenes)
-STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # Carpeta donde Django guardará los archivos
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]  # Carpeta donde están los archivos en desarrollo
-
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -150,6 +147,17 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 CSRF_TRUSTED_ORIGINS = [
     "https://testvar-production.up.railway.app"
 ]
-CSRF_COOKIE_SECURE = True  # Asegura que la cookie CSRF se envía solo por HTTPS
-CSRF_COOKIE_HTTPONLY = False  # Evita que los scripts del navegador accedan a la cookie
-CSRF_USE_SESSIONS = True  # Usa la sesión para almacenar el token CSRF
+CSRF_COOKIE_SECURE = True  
+CSRF_COOKIE_HTTPONLY = False  
+CSRF_USE_SESSIONS = True  
+
+
+
+
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]  
+
+
+# Whitenoise configura automáticamente los archivos estáticos en producción
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
