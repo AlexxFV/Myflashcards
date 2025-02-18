@@ -1,1 +1,2 @@
-web: gunicorn flashcards.wsgi:application --log-file -
+web: gunicorn testvar.wsgi:application --log-file -
+
