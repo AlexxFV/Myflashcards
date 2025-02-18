@@ -218,16 +218,6 @@ def flashcard_toggle_share(request, pk):
         return redirect('flashcards:flashcard_list')
     return HttpResponseForbidden("You are not allowed to perform this action.")
 
-
-@login_required
-def flashcard_list(request):
-    """
-    List all flashcards created by the user.
-    """
-    flashcards = FlashCard.objects.filter(created_by=request.user)
-    hidden_ids = HiddenFlashCard.objects.filter(user=request.user).values_list('flashcard_id', flat=True)
-    return render(request, 'flashcards/flashcard_list.html', {'flashcards': flashcards, 'hidden_ids': hidden_ids})
-
 @login_required
 def flashcard_toggle_hidden(request, pk):
     """
@@ -240,7 +230,14 @@ def flashcard_toggle_hidden(request, pk):
         return JsonResponse({'hidden': False})
     return JsonResponse({'hidden': True})
 
-
+@login_required
+def flashcard_list(request):
+    """
+    List all flashcards created by the user.
+    """
+    flashcards = FlashCard.objects.filter(created_by=request.user)
+    hidden_ids = HiddenFlashCard.objects.filter(user=request.user).values_list('flashcard_id', flat=True)
+    return render(request, 'flashcards/flashcard_list.html', {'flashcards': flashcards, 'hidden_ids': hidden_ids})
 # Shared Flashcards Views
 @login_required
 def shared_flashcards(request):

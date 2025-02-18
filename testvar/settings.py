@@ -13,18 +13,14 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-nje&+x9@ut_s_7g^+6(0k7fig=11le!tmtc#$g9v-y18unb2%s'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["testvar-production.up.railway.app", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["myflashcard.up.railway.app", "127.0.0.1", "localhost"]
 
-# Application definition
 INSTALLED_APPS = [
     'flashcards',  
     'django.contrib.admin',
@@ -50,10 +46,8 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-# Custom User Model
 AUTH_USER_MODEL = 'flashcards.User'
 
-# Redirects after login/logout
 LOGIN_REDIRECT_URL = '/'  
 LOGOUT_REDIRECT_URL = '/login/' 
 
@@ -88,7 +82,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'testvar.wsgi.application'
 
-# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -96,7 +89,6 @@ DATABASES = {
     }
 }
 
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -111,19 +103,13 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-# Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-
-
-# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# DRF Spectacular settings
 SPECTACULAR_SETTINGS = {
     'TITLE': 'TestVar - Flashcards API',
     'DESCRIPTION': 'A revolutionary REST API for flashcards',
@@ -141,23 +127,15 @@ LOGIN_URL = '/login/'
 
 AUTH_USER_MODEL = 'flashcards.User'
 
-
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://testvar-production.up.railway.app"
-]
+CSRF_TRUSTED_ORIGINS = ["https://myflashcard.up.railway.app"]
 CSRF_COOKIE_SECURE = True  
 CSRF_COOKIE_HTTPONLY = False  
 CSRF_USE_SESSIONS = True  
 
 
-
-
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]  
-
-
-# Whitenoise configura automáticamente los archivos estáticos en producción
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"

@@ -198,7 +198,7 @@ def test_flashcard_delete():
     client = APIClient()
     client.login(username="testuser", password="Testpassword")
 
-    # Delete flashcard
+
     url = reverse('flashcards:flashcard_delete', args=[flashcard.id])
     response = client.post(url)
 
